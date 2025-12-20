@@ -132,13 +132,15 @@ python3 simulation.py
   - Food source coordinates
   - Navigation vectors
 
-### Simulation Visualization
-
-![Three Ants Navigation](ThreeAnts_OneShot.gif)
-
 ---
 
-## Visualization Guide
+## Visualization
+
+### Simulation Output
+
+<img src="ThreeAnts_OneShot.gif" width="600" alt="Three Ants Navigation">
+
+### Legend
 
 | Symbol | Representation |
 |--------|---------------|
