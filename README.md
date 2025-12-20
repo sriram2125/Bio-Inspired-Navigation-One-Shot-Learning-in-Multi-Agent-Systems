@@ -79,25 +79,47 @@ This project translates these biological mechanisms into computational algorithm
 
 ## Installation and Execution
 
-### Environment Setup
+### Step 1: Install Dependencies
+
+Install the required Python packages:
 
 ```bash
-cd Ant_Navigation_Project
 pip3 install numpy matplotlib
 ```
 
-### Running the Simulation
+### Step 2: Create Project Directory
+
+Create a new directory for the project:
 
 ```bash
-python3 src/simulation.py
+mkdir Ant_Navigation_Project
+cd Ant_Navigation_Project
+```
+
+### Step 3: Create the Simulation Script
+
+Create a new file named `simulation.py` and copy the source code provided in the Source Code section below.
+
+### Step 4: Run the Simulation
+
+Execute the simulation:
+
+```bash
+python3 simulation.py
 ```
 
 ### Expected Output
 
-- Animated visualization: `ThreeAnts_OneShot.gif`
+- Visual plot displaying the three agent trajectories
 - Console output displaying:
+  - Initialization message
+  - Agent status updates (Ant 1: Scouting, Ant 2: Checking Memory, Ant 3: Checking Memory)
   - Food source coordinates
-  - Computed homing vector
+  - Navigation vectors
+
+### Simulation Visualization
+
+![Three Ants Navigation](ThreeAnts_OneShot.gif)
 
 ---
 
@@ -110,16 +132,6 @@ python3 src/simulation.py
 | Blue line | Scout agent trajectory (exploration + homing) |
 | Green line | Learner agent trajectory (direct navigation) |
 | Orange line | Lost agent trajectory (fallback exploration) |
-
----
-
-## Key Findings
-
-- Successful demonstration of learning without iterative training
-- No reinforcement learning required
-- Effective one-shot generalization from single exploration
-- Strong alignment with biological navigation principles
-- Robust performance under memory failure conditions
 
 ---
 
