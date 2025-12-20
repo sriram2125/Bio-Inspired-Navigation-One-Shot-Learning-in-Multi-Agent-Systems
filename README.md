@@ -35,7 +35,22 @@ This project translates these biological mechanisms into computational algorithm
 
 ### Information Flow (Stigmergic Communication)
 
-![System Flowchart](flow.jpg)
+```mermaid
+graph LR
+    A([NEST Start]) --> B[SCOUT ANT:<br>Stochastic Search &<br>Path Integration]
+    B --> C{Food Found?}
+    C -- No --> B
+    C -- Yes --> D[Calculate Homing Vector]
+    D --> E[(SHARED MEMORY<br>Stigmergy)]
+    
+    E --> F{Memory Exists?}
+    F -- Yes --> G[LEARNER ANT:<br>Read Memory &<br>Suppress Search]
+    G --> H[EXECUTE:<br>Deterministic Path]
+    H --> I([FOOD SOURCE End])
+    
+    F -- No --> J[LOST ANT:<br>Revert to<br>Stochastic Search]
+    J --> J
+```
 
 ---
 
