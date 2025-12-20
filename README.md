@@ -1,8 +1,6 @@
 # Bio-Inspired Navigation: One-Shot Learning in Multi-Agent Systems
 
 **Author:** Sriram S Rajan (ICSR07797)  
-**Affiliation:** Department of Applied Mechanics & Biomedical Engineering, IIT Madras  
-
 ---
 
 ## Abstract
@@ -73,22 +71,6 @@ graph LR
 - Detects corrupted or unavailable environmental memory
 - Reverts to stochastic search behavior
 - Maintains system resilience through exploratory fallback
-
----
-
-## Experimental Results
-
-### One-Shot Learning Validation
-
-- **Blue Path:** Scout agent (exploration + homing)
-- **Green Path:** Learner agent (optimal direct path)
-- Demonstrates successful knowledge transfer without prior exploration
-
-### Robustness Testing
-
-- Environmental memory deliberately corrupted
-- **Orange Path:** Agent successfully reverts to random walk
-- Prevents colony-level navigation failure
 
 ---
 
@@ -294,7 +276,3 @@ if __name__ == "__main__":
 ```
 
 ---
-
-## References
-
-This work is inspired by research on desert ant navigation, particularly studies on *Cataglyphis* species and their remarkable ability to navigate efficiently in featureless environments using path integration.
