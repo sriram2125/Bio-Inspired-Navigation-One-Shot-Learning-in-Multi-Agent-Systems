@@ -1,23 +1,31 @@
 # Bio-Inspired Navigation: One-Shot Learning in Multi-Agent Systems
 
-**Author:** Sriram S Rajan 
+**Author:** *Sriram S Rajan*  
+**Institution:** *Department of Applied Mechanics and Biomedical Engineering, IIT Madras*
+
 ---
 
 ## Abstract
 
-This project implements a bio-inspired multi-agent navigation system modeled after the desert ant *Cataglyphis*. The system demonstrates one-shot learning using path integration (dead reckoning) and stigmergic communication, without reinforcement learning, reward shaping, or training loops. A single exploratory agent discovers an optimal path and shares it through the environment, enabling other agents to navigate optimally on their first attempt.
+This project implements a **bio-inspired multi-agent navigation system** modeled after the desert ant *Cataglyphis bicolor*. The system demonstrates **one-shot learning** using path integration (*dead reckoning*) and **stigmergic communication**, without reinforcement learning, reward shaping, or training loops. 
+
+*A single exploratory agent discovers an optimal path and shares it through the environment, enabling other agents to navigate optimally on their first attempt.*
 
 ---
 
 ## Biological Inspiration
 
-Unlike pheromone-following ants, *Cataglyphis* ants operate in extreme desert heat where chemical trails evaporate quickly. Their navigation system relies on three key mechanisms:
+Unlike pheromone-following ants, ***Cataglyphis*** ants operate in extreme desert heat where chemical trails evaporate quickly. Their navigation system relies on three key mechanisms:
 
-1. **Skylight Polarization Compass** – Orientation using polarized light patterns
-2. **Proprioceptive Odometry** – Distance estimation via step counting
-3. **Vector Integration** – Maintenance of a single homing vector
+### Core Navigation Components
 
-This project translates these biological mechanisms into computational algorithms.
+| Mechanism | Function | Biological Implementation |
+|-----------|----------|--------------------------|
+| **Skylight Polarization Compass** | *Orientation* | Dorsal Rim Area detects polarized light patterns |
+| **Proprioceptive Odometry** | *Distance Estimation* | Step counting via leg proprioception |
+| **Vector Integration** | *Homing* | Continuous maintenance of single return vector |
+
+*This project translates these biological mechanisms into computational algorithms.*
 
 ---
 
@@ -25,13 +33,15 @@ This project translates these biological mechanisms into computational algorithm
 
 ### Agent Classification
 
-| Agent Type | Primary Role | Behavioral Characteristics |
-|------------|--------------|---------------------------|
-| **Scout** | Explorer | Performs random walk with path integration |
-| **Learner** | Recruit | Reads stored vector and executes direct navigation |
-| **Lost Agent** | Robustness Test | Reverts to exploratory search under failure conditions |
+The system consists of three agent types, each demonstrating different aspects of collective intelligence:
 
-### Information Flow (Stigmergic Communication)
+| Agent Type | Role | Behavioral Characteristics |
+|------------|------|---------------------------|
+| **Scout** | *Explorer* | Performs random walk with path integration |
+| **Learner** | *Recruit* | Reads stored vector and executes direct navigation |
+| **Lost Agent** | *Robustness Test* | Reverts to exploratory search under failure conditions |
+
+### Information Flow via Stigmergic Communication
 
 ```mermaid
 graph TB
@@ -80,21 +90,27 @@ graph TB
 
 ### Phase 1: Scout Agent
 
-- Executes stochastic exploration
-- Integrates displacement vectors using vector addition
-- Stores optimal homing vector in shared environmental memory
+The **Scout** performs initial exploration:
+
+- *Executes stochastic exploration* using random walk
+- *Integrates displacement vectors* using vector addition: $\vec{H} = \sum_{i=0}^{N} d \cdot [\cos(\theta_i), \sin(\theta_i)]$
+- *Stores optimal homing vector* in shared environmental memory
 
 ### Phase 2: Learner Agent
 
-- Accesses shared environmental memory
-- Suppresses random search behavior
-- Executes deterministic navigation immediately (one-shot learning)
+The **Learner** demonstrates one-shot learning:
+
+- *Accesses shared environmental memory* via stigmergic communication
+- *Suppresses random search behavior* through behavioral switching
+- *Executes deterministic navigation immediately* achieving zero-shot transfer
 
 ### Phase 3: Lost Agent
 
-- Detects corrupted or unavailable environmental memory
-- Reverts to stochastic search behavior
-- Maintains system resilience through exploratory fallback
+The **Lost Agent** validates system robustness:
+
+- *Detects corrupted or unavailable environmental memory*
+- *Reverts to stochastic search behavior* enabling graceful degradation
+- *Maintains system resilience* through exploratory fallback
 
 ---
 
@@ -110,20 +126,16 @@ pip3 install numpy matplotlib
 
 ### Step 2: Create Project Directory
 
-Create a new directory for the project:
-
 ```bash
-mkdir Ant_Navigation_Project
-cd Ant_Navigation_Project
+mkdir 3AntOneshot
+cd 3AntOneshot
 ```
 
 ### Step 3: Create the Simulation Script
 
-Create a new file named `oneshotlearning.py` and copy the source code provided in the Source Code section below.
+Create a new file named `oneshotlearning.py` and copy the source code provided in the **Source Code** section below.
 
 ### Step 4: Run the Simulation
-
-Execute the simulation:
 
 ```bash
 python3 oneshotlearning.py
@@ -131,10 +143,12 @@ python3 oneshotlearning.py
 
 ### Expected Output
 
-- Visual plot displaying the three agent trajectories
-- Console output displaying:
+The simulation will generate:
+
+- *Visual plot* displaying the three agent trajectories
+- *Console output* with status updates including:
   - Initialization message
-  - Agent status updates (Ant 1: Scouting, Ant 2: Checking Memory, Ant 3: Checking Memory)
+  - Agent status updates: *Ant 1: Scouting*, *Ant 2: Checking Memory*, *Ant 3: Checking Memory*
   - Food source coordinates
   - Navigation vectors
 
@@ -146,15 +160,17 @@ python3 oneshotlearning.py
 
 <img src="ThreeAnts_OneShot.gif" width="600" alt="Three Ants Navigation">
 
+*Animation showing the sequential behavior of all three agents*
+
 ### Legend
 
 | Symbol | Representation |
 |--------|---------------|
-| Green dot | Nest location |
-| Red star | Food source |
-| Blue line | Scout agent trajectory (exploration + homing) |
-| Green line | Learner agent trajectory (direct navigation) |
-| Orange line | Lost agent trajectory (fallback exploration) |
+| **Green dot** | *Nest location* |
+| **Red star** | *Food source* |
+| **Blue line** | *Scout agent trajectory* - exploration and homing |
+| **Green line** | *Learner agent trajectory* - direct navigation |
+| **Orange line** | *Lost agent trajectory* - fallback exploration |
 
 ---
 
