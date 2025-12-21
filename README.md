@@ -1,6 +1,6 @@
 # Bio-Inspired Navigation: One-Shot Learning in Multi-Agent Systems
 
-**Author:** Sriram S Rajan (ICSR07797)  
+**Author:** Sriram S Rajan 
 ---
 
 ## Abstract
@@ -95,14 +95,14 @@ cd Ant_Navigation_Project
 
 ### Step 3: Create the Simulation Script
 
-Create a new file named `simulation.py` and copy the source code provided in the Source Code section below.
+Create a new file named `oneshotlearning.py` and copy the source code provided in the Source Code section below.
 
 ### Step 4: Run the Simulation
 
 Execute the simulation:
 
 ```bash
-python3 simulation.py
+python3 oneshotlearning.py
 ```
 
 ### Expected Output
@@ -136,7 +136,7 @@ python3 simulation.py
 
 ## Source Code
 
-### simulation.py
+### oneshotlearning.py
 
 ```python
 import numpy as np
