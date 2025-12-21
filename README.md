@@ -1,7 +1,7 @@
 # Bio-Inspired Navigation: One-Shot Learning in Multi-Agent Systems
 
 **Author:** *Sriram S Rajan*  
-**Institution:** *Department of Applied Mechanics and Biomedical Engineering, IIT Madras*
+
 
 ---
 
