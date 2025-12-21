@@ -34,20 +34,44 @@ This project translates these biological mechanisms into computational algorithm
 ### Information Flow (Stigmergic Communication)
 
 ```mermaid
-graph LR
-    A([NEST Start]) --> B[SCOUT ANT:<br>Stochastic Search &<br>Path Integration]
-    B --> C{Food Found?}
-    C -- No --> B
-    C -- Yes --> D[Calculate Homing Vector]
-    D --> E[(SHARED MEMORY<br>Stigmergy)]
+graph TB
+    %% --- STYLING ---
+    classDef nest fill:#333,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef scout fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef memory fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef learner fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef lost fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#000;
     
-    E --> F{Memory Exists?}
-    F -- Yes --> G[LEARNER ANT:<br>Read Memory &<br>Suppress Search]
-    G --> H[EXECUTE:<br>Deterministic Path]
-    H --> I([FOOD SOURCE End])
+    %% --- PHASE 1 ---
+    Start((NEST)):::nest
+    S_Search[Random Search]:::scout
+    S_Check{Found?}:::scout
+    S_Calc[Path Integration]:::scout
     
-    F -- No --> J[LOST ANT:<br>Revert to<br>Stochastic Search]
-    J --> J
+    %% --- MEMORY ---
+    DB[(Memory<br/>Stigmergy)]:::memory
+    
+    %% --- PHASE 2-3 ---
+    Start2((NEST)):::nest
+    Decision{Check Memory?}:::learner
+    L_Run[Learner<br/>Direct Path]:::learner
+    L_Lost[Lost<br/>Search Again]:::lost
+    End((FOOD)):::nest
+    
+    %% --- CONNECTIONS PHASE 1 ---
+    Start --> S_Search
+    S_Search --> S_Check
+    S_Check -->|No| S_Search
+    S_Check -->|Yes| S_Calc
+    S_Calc ==>|Write| DB
+    
+    %% --- CONNECTIONS PHASE 2-3 ---
+    Start2 --> Decision
+    DB -.->|Read| Decision
+    Decision -->|Vector Found| L_Run
+    Decision -->|Empty| L_Lost
+    L_Run --> End
+    L_Lost -.->|Loop| S_Search
 ```
 
 ---
