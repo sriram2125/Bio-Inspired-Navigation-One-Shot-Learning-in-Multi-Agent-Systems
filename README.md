@@ -176,7 +176,7 @@ The simulation will generate:
 
 ## Source Code
 
-### oneshotlearning.py
+### oneshotlearning.py - Zero diffusion limit
 
 ```python
 import numpy as np
@@ -315,4 +315,192 @@ if __name__ == "__main__":
     runMultiAntSim()
 ```
 
+### OneshotlearningBounded.py - Bounded Sim for fewer chances Diffusion Limit
+
+
+```python
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
+
+def generate_bounded_search(start_x, start_y, target_x, target_y, boundary, step_size=1.0, detection_radius=2.0):
+    walkX, walkY = [start_x], [start_y]
+    curX, curY = start_x, start_y
+    
+    step_count = 0
+    
+    while True:
+        dist = np.sqrt((curX - target_x)**2 + (curY - target_y)**2)
+        
+        if dist < detection_radius:
+            walkX.append(target_x)
+            walkY.append(target_y)
+            print(f"  > Scout found food in {step_count} steps.")
+            break
+            
+        angle = np.random.uniform(0, 2 * np.pi)
+        nextX = curX + step_size * np.cos(angle)
+        nextY = curY + step_size * np.sin(angle)
+        
+        if nextX > boundary: nextX = boundary - (nextX - boundary)
+        if nextX < -boundary: nextX = -boundary - (nextX - -boundary)
+        if nextY > boundary: nextY = boundary - (nextY - boundary)
+        if nextY < -boundary: nextY = -boundary - (nextY - -boundary)
+        
+        curX, curY = nextX, nextY
+        walkX.append(curX)
+        walkY.append(curY)
+        step_count += 1
+        
+    return walkX, walkY
+
+def generate_cheat_search(steps, stepSize):
+    walkX, walkY = [0.0], [0.0]
+    curX, curY = 0.0, 0.0
+    for _ in range(steps):
+        angle = np.random.uniform(0, 2 * np.pi)
+        curX += stepSize * np.cos(angle)
+        curY += stepSize * np.sin(angle)
+        walkX.append(curX)
+        walkY.append(curY)
+    return walkX, walkY, curX, curY
+
+def generate_homing(startX, startY, endX, endY, num_steps=50):
+    pathX = np.linspace(startX, endX, num_steps)
+    pathY = np.linspace(startY, endY, num_steps)
+    return list(pathX), list(pathY)
+
+def runMultiAntSim():
+    print("Initializing Colony Simulation (Bounded Mode)...")
+    
+    FIXED_FOOD = (15, 15) 
+    BOUNDARY_SIZE = 25.0
+    
+    pheromone_memory = None 
+
+    print("Ant 1: Scouting in Arena...")
+    
+    a1_walkX, a1_walkY = generate_bounded_search(
+        0, 0, 
+        FIXED_FOOD[0], FIXED_FOOD[1], 
+        boundary=BOUNDARY_SIZE
+    )
+    
+    foodX, foodY = FIXED_FOOD
+    
+    a1_homeX, a1_homeY = generate_homing(foodX, foodY, 0, 0)
+    
+    pheromone_memory = {
+        'x': np.linspace(0, foodX, 50),
+        'y': np.linspace(0, foodY, 50)
+    }
+    print("Ant 1: Path vector saved to Pheromone Memory.")
+
+    ant1_pathX = a1_walkX + a1_homeX
+    ant1_pathY = a1_walkY + a1_homeY
+
+    print("Ant 2: Checking Memory...")
+    if pheromone_memory is not None:
+        print("Ant 2: Trail found! Executing One-Shot direct path.")
+        ant2_pathX = list(pheromone_memory['x'])
+        ant2_pathY = list(pheromone_memory['y'])
+    else:
+        ant2_pathX, ant2_pathY, _, _ = generate_cheat_search(150, 1.0)
+
+    print("Ant 3: Checking Memory...")
+    sensor_failure = True 
+    
+    if pheromone_memory is not None and not sensor_failure:
+        ant3_pathX = list(pheromone_memory['x'])
+        ant3_pathY = list(pheromone_memory['y'])
+    else:
+        print("Ant 3: Read Failed! Forced to Stochastic Search.")
+        wX, wY, fX, fY = generate_cheat_search(100, 1.0) 
+        hX, hY = generate_homing(fX, fY, 0, 0)
+        ant3_pathX = wX + hX
+        ant3_pathY = wY + hY
+
+    len1 = len(ant1_pathX)
+    len2 = len(ant2_pathX)
+    len3 = len(ant3_pathX)
+    totalFrames = len1 + len2 + len3
+
+    all_X = ant1_pathX + ant2_pathX + ant3_pathX
+    all_Y = ant1_pathY + ant2_pathY + ant3_pathY
+    
+    fig, ax = plt.subplots(figsize=(10, 8))
+    
+    boundary_rect = plt.Rectangle((-BOUNDARY_SIZE, -BOUNDARY_SIZE), 
+                                  2*BOUNDARY_SIZE, 2*BOUNDARY_SIZE, 
+                                  fill=False, color='gray', linestyle='--', linewidth=2, label='Arena Boundary')
+    ax.add_patch(boundary_rect)
+    
+    pad = 5
+    ax.set_xlim(-BOUNDARY_SIZE - pad, BOUNDARY_SIZE + pad)
+    ax.set_ylim(-BOUNDARY_SIZE - pad, BOUNDARY_SIZE + pad)
+    
+    ax.plot(0, 0, 'go', markersize=12, label='Nest')
+    ax.plot(FIXED_FOOD[0], FIXED_FOOD[1], 'r*', markersize=15, label='Food')
+
+    ax.set_title(f"One-Shot Learning (Bounded Search)")
+    ax.axis('off')
+
+    line1, = ax.plot([], [], 'b-', alpha=0.3, label='Ant 1 (Scout)')
+    dot1, = ax.plot([], [], 'b.', markersize=8)
+    
+    line2, = ax.plot([], [], 'g-', linewidth=2, label='Ant 2 (Learner)')
+    dot2, = ax.plot([], [], 'go', markersize=8)
+    
+    line3, = ax.plot([], [], 'orange', linestyle='--', alpha=0.6, label='Ant 3 (Lost)')
+    dot3, = ax.plot([], [], 'o', color='orange', markersize=8)
+    
+    ax.legend(loc='upper right')
+
+    def init():
+        line1.set_data([], [])
+        dot1.set_data([], [])
+        line2.set_data([], [])
+        dot2.set_data([], [])
+        line3.set_data([], [])
+        dot3.set_data([], [])
+        return line1, dot1, line2, dot2, line3, dot3
+
+    def animate(i):
+        if i < len1:
+            line1.set_data(ant1_pathX[:i+1], ant1_pathY[:i+1])
+            dot1.set_data([ant1_pathX[i]], [ant1_pathY[i]])
+            
+        elif i < len1 + len2:
+            line1.set_data(ant1_pathX, ant1_pathY)
+            dot1.set_data([ant1_pathX[-1]], [ant1_pathY[-1]])
+            
+            idx = i - len1
+            line2.set_data(ant2_pathX[:idx+1], ant2_pathY[:idx+1])
+            dot2.set_data([ant2_pathX[idx]], [ant2_pathY[idx]])
+
+        else:
+            line1.set_data(ant1_pathX, ant1_pathY)
+            dot1.set_data([ant1_pathX[-1]], [ant1_pathY[-1]])
+            line2.set_data(ant2_pathX, ant2_pathY)
+            dot2.set_data([ant2_pathX[-1]], [ant2_pathY[-1]])
+            
+            idx = i - (len1 + len2)
+            if idx < len3:
+                line3.set_data(ant3_pathX[:idx+1], ant3_pathY[:idx+1])
+                dot3.set_data([ant3_pathX[idx]], [ant3_pathY[idx]])
+
+        return line1, dot1, line2, dot2, line3, dot3
+
+    print(f"Generating Animation ({totalFrames} frames)...")
+    ani = FuncAnimation(fig, animate, frames=totalFrames, init_func=init, blit=True)
+    
+    writer = PillowWriter(fps=20)
+    ani.save("ThreeAnts_Bounded.gif", writer=writer)
+    print("Done. Saved as 'ThreeAnts_Bounded.gif'")
+    plt.close()
+
+if __name__ == "__main__":
+    runMultiAntSim()
+```
 ---
