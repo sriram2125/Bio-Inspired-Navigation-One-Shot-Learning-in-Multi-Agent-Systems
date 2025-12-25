@@ -315,7 +315,7 @@ if __name__ == "__main__":
     runMultiAntSim()
 ```
 
-### OneshotlearningBounded.py - Bounded Sim for fewer chances Diffusion Limit
+### OneshotlearningBounded.py - Bounded Sim for fewer chances diffusion limit
 
 
 ```python
