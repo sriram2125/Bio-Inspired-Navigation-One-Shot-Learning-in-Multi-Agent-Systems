@@ -176,7 +176,8 @@ The simulation will generate:
 
 ## Source Code
 
-### oneshotlearning.py - Food appears at the end of the scout's path - to avoid diffusion limit 
+### oneshotlearning.py - Implemented Inverse Simulation to bypass the diffusion limit of stochastic search. By spawning the food at the Scout's final location, we guarantee a successful Phase 1. This ensures a valid vector is always passed to Phase 2, allowing us to isolate and verify the Learner's vector integration logic.
+
 
 ```python
 import numpy as np
